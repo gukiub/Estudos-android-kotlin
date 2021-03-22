@@ -1,34 +1,32 @@
 package com.example.filmescoroutines.ui.main
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.example.filmescoroutines.R
-import kotlinx.android.synthetic.main.main_fragment.*
+import com.example.filmescoroutines.databinding.MainFragmentBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
-
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModel()
+    private lateinit var binding: MainFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        binding = MainFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, MainViewModel.MainViewModelFactory(MainRepository())).get(MainViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel.filmesLiveData.observe(viewLifecycleOwner, Observer { filmes ->
-            textViewFilmes.text = filmes[0].titulo
+            binding.textViewFilmes.text = filmes.map {
+                "${it.id} - ${it.titulo}"
+            }.toString()
         })
 
         viewModel.getFilmesCoroutines()

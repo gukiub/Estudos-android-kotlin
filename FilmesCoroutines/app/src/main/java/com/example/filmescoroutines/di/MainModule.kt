@@ -1,5 +1,6 @@
 package com.example.filmescoroutines.di
 
+import androidx.navigation.NavController
 import com.example.filmescoroutines.ui.main.MainRepository
 import com.example.filmescoroutines.ui.main.MainViewModel
 import org.koin.androidx.experimental.dsl.viewModel
@@ -11,9 +12,10 @@ val mainModule = module {
         MainRepository()
     }
 
-    viewModel {
+    viewModel { (navController: NavController) ->
         MainViewModel(
-            repository = get()
+            repository = get(),
+            navController = navController
         )
     }
 }
